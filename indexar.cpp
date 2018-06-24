@@ -1,8 +1,7 @@
-#include "mainwindow.h"
-#include <QApplication>
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
+#include "estructuras.h"
 
 using namespace std;
 typedef struct table{
@@ -18,7 +17,7 @@ typedef struct table{
 void indexar_tabla(char* nombre_archivo,int numero_columna)
 {
     ifstream is (nombre_archivo, std::ifstream::binary);
-    ofstream ind("/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_attributes/part-00000-of-00001.txt",std::ifstream::binary);
+    ofstream ind("machine_attributes/part-00000-of-00001.txt",ios::out | ios::binary);
       if (is) {
         //long int i=0;
         long int j=0;
@@ -48,11 +47,8 @@ void indexar_tabla(char* nombre_archivo,int numero_columna)
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
-    MainWindow w;
-    w.show();
-    char* nombre="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_attributes/part-00000-of-00001.csv";
+
+    char* nombre="machine_attributes/part-00000-of-00001.csv";
     indexar_tabla(nombre,2);
 
-    return a.exec();
 }
