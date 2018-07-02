@@ -9,9 +9,30 @@
 using namespace std;
 
 
+int particion(vector<pair<string,int>> A,int p,int r){
+    int pivot=stoi(A[r].first);
+    int i=(p-1);
+    for(int j=p;j<=r-1;j++){
+        if(stoi(A[j].first)<=pivot){
+            i++;
+            swap(A[i].first,A[j].first);
+            swap(A[i].second,A[j].second);
+        }
+    }
+    swap(A[i+1].first,A[r].first);
+    swap(A[i+1].second,A[r].second);
+    return (i+1);
+}
+void quicksort(vector<pair<string,int>> &A,int p,int r){
+    int q;
+    if(p<r){
+        q=particion(A,p,r);
+        quicksort(A,p,q-1);
+        quicksort(A,q+1,r);
+    }
+}
 
-
-void indexar_tabla(char* nombre_archivo,int numero_columna)
+void indexar_tabla(string nombre_archivo,int numero_columna)
 {
     ifstream is (nombre_archivo, std::ifstream::binary);
     ofstream ind("machine_attributes/part-00000-of-00001_ordenado.txt",ios::out | ios::binary);
@@ -36,9 +57,10 @@ void indexar_tabla(char* nombre_archivo,int numero_columna)
                 }
             }
         }
-        //sort (index.begin(), index.end(),index);
-        for(unsigned long long int i=0;i<index.size();i++){
-            ind<<index[i].first<<","<<index[i].second<<endl;
+        quicksort(index,0, 2000);
+        for(unsigned long long int i=0;i<2000;i++){
+            cout<<index[i].first<<","<<index[i].second<<endl;
+            cout<<i<<endl;
         }
         
         delete[] buffer;
@@ -51,7 +73,7 @@ void indexar_tabla(char* nombre_archivo,int numero_columna)
 int main(int argc, char *argv[])
 {
 
-    char* nombre="machine_attributes/part-00000-of-00001.csv";
+    string nombre="machine_attributes/part-00000-of-00001.csv";
     indexar_tabla(nombre,2);
 
 }
