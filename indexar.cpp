@@ -3,16 +3,20 @@
 #include <stdio.h>
 #include <iostream>
 #include <string>
+#include <vector>
+#include <algorithm>
 
 using namespace std;
 
+
 bool indexar_tabla(string archivo_entrada,int numero_columna,string archivo_salida)
 {
-    long long int tam=0;
     ifstream is (archivo_entrada, std::ifstream::binary);
     ofstream ind(archivo_salida,std::ofstream::app);
       if (is) {
         char * buffer = new char [200];
+        string convert;
+        vector<pair<long int,long int>> index;
         long int posicion;
         while(!is.eof())
         {
@@ -23,13 +27,15 @@ bool indexar_tabla(string archivo_entrada,int numero_columna,string archivo_sali
                 }
                 is.getline(buffer,50,',');
                 if(i==numero_columna)
-                {
-                    ind.seekp(0,ind.end);
-                    ind<<buffer<<","<<posicion<<endl;
+                {   
+                    index.push_back(make_pair(atol(buffer),posicion));
                     is.getline(buffer,200);
-                    tam++;
                 }
             }
+        }
+        sort(index.begin(),index.end());
+        for(unsigned long long int i=0;i<index.size()-1;i++){
+            ind<<index[i].first<<","<<index[i].second<<endl;
         }
         delete[] buffer;
         ind.close();
@@ -39,7 +45,6 @@ bool indexar_tabla(string archivo_entrada,int numero_columna,string archivo_sali
     {
         return false;    
     }
-    cout<<tam;
     return true;
 }
 
@@ -48,19 +53,19 @@ void indexar_machine_atributes(int numero_columna)
     string entrada="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_attributes/part-00000-of-00001.csv";
     string salida="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_attributes/indice.txt";
     if(indexar_tabla(entrada,numero_columna,salida))
-        cout<<"indexacion exitosa";
+        cout<<endl<<"indexacion exitosa";
     else
-        cout<<"error durante la indexacion";
+        cout<<endl<<"error durante la indexacion";
 }
 
 void indexar_machine_events(int numero_columna)
 {
     string entrada="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_events/part-00000-of-00001.csv";
-    string salida="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_events/indice.txt";
+    string salida="/home/duilmarc/Documents/bd2/proyecto_Base_Datos/clusterdata-2011-2/machine_events/indice2.txt";
     if(indexar_tabla(entrada,numero_columna,salida))
-        cout<<"indexacion exitosa";
+        cout<<endl<<"indexacion exitosa";
     else
-        cout<<"error durante la indexacion";
+        cout<<endl<<"error durante la indexacion";
 }
 
 void indexar_task_events(int numero_columna)
@@ -197,7 +202,7 @@ void indexar_job_events(int numero_columna)
 int main(int argc, char *argv[])
 {
 
-    //indexar_machine_atributes(2);
-    indexar_job_events(2);
+    indexar_machine_atributes(2);
+    //indexar_job_events(2);
     return 0;
 }
