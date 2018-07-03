@@ -8,7 +8,7 @@
 
 using namespace std;
 
-
+/*
 int particion(vector<pair<string,int>> A,int p,int r){
     int pivot=stoi(A[r].first);
     int i=(p-1);
@@ -31,6 +31,30 @@ void quicksort(vector<pair<string,int>> &A,int p,int r){
         quicksort(A,q+1,r);
     }
 }
+*/
+/*void quicksort(vector<pair<string,int>> str,int p ,int r){
+    int i=p,j=r;
+    int mid=str[(p+r)/2].first;
+    while(i<=j){
+        while(str[i].first<mid)
+            i++;
+        while(str[j].first>mid)
+            j--;
+        if(i<=j){
+            swap(str[i].first,str[j].first);
+            swap(str[i].second,str[j].second);
+            i++;j--;
+        }
+    };
+    if(p<j){
+        quicksort(str,p,j);
+    }
+    if(i<r){
+        quicksort(str,i,r);
+    }
+}
+*/
+
 
 void indexar_tabla(string nombre_archivo,int numero_columna)
 {
@@ -39,7 +63,7 @@ void indexar_tabla(string nombre_archivo,int numero_columna)
       if (is) {
         //long int i=0;
         long int j=0;
-        char * buffer = new char [50];
+        char * buffer = new char [200];
         long int posicion;
         vector<pair<string,int>> index;
         while(!is.eof())
@@ -48,19 +72,20 @@ void indexar_tabla(string nombre_archivo,int numero_columna)
                 if(i==1)
                     posicion=is.tellg();
 
-                is.getline(buffer,50,',');
+                is.getline(buffer,200,',');
                 if(i==numero_columna)
                 {
                     index.push_back(make_pair(buffer,posicion));                    
-                    is.getline(buffer,1000);
+                    is.getline(buffer,200);
                     j++;
                 }
             }
         }
-        quicksort(index,0, 2000);
-        for(unsigned long long int i=0;i<2000;i++){
-            cout<<index[i].first<<","<<index[i].second<<endl;
-            cout<<i<<endl;
+        sort(index.begin(),index.end());
+        //radix_sort(index);
+        for(unsigned long long int i=0;i<index.size()-1;i++){
+            ind<<index[i].first<<","<<index[i].second<<endl;
+            
         }
         
         delete[] buffer;
