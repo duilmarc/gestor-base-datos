@@ -21,7 +21,7 @@ public:
     bool insert(lli,string,lli,string,string,string,string,string);
     bool delet(string);
     bool update(lli,string,lli,string,string,string,string,string);
-    void select(string);
+    string select(string);
 };
 
 
@@ -38,7 +38,7 @@ public:
     bool insert(lli,lli,string,string,bool);
     bool delet(lli);
     bool update(lli,lli,string,string,bool);
-    void select(lli);
+    string select(lli);
 
 
 };
@@ -58,7 +58,7 @@ public:
     bool insert(lli,lli,string,string ,string,string);
     bool delet(lli);
     bool update(lli,lli,string,string ,string,string);
-    bool select(lli);
+    string select(lli);
 
 };
 class task_constraints
@@ -76,7 +76,7 @@ public:
     bool insert(lli,lli,lli,string,char,string);
     bool delet(lli);
     bool update(lli,lli,lli,string,char,string);
-    void select(lli);
+    string select(lli);
 
 };
 
@@ -102,7 +102,7 @@ public:
     bool insert(lli,string,lli,string,lli,string,string,string,lli,string,string,string,string);
     bool delet(string);
     bool update(lli,string,lli,string,lli,string,string,string,lli,string,string,string,string);
-    void select(string);
+    string select(string);
 
 };
 
@@ -132,7 +132,7 @@ struct task_usage{
 	bool insert(lli,lli,lli,string,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli);
 	bool delet(lli);
 	bool update(lli,lli,lli,string,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli);
-	void select(lli);
+	string select(lli);
 
 };
 
