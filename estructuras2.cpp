@@ -1,13 +1,14 @@
-//#ifndef ESTRUCTURAS_H
-//#define ESTRUCTURAS_H
+#ifndef ESTRUCTURAS_H
+#define ESTRUCTURAS_H
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
 #include <string>
 typedef unsigned long long int lli;
+typedef char* T;
 using namespace std;
 
-template<typename T>
+
 class tabla_maestra
 {
 public:
@@ -19,37 +20,63 @@ public:
 
 };
 
-template<typename T>
-class job_events:
+
+class job_events:public tabla_maestra
 {
 public:
     lli size=0;    
-    job_events();
-    bool insert(string);
+    string archivo;
+    job_events(string archivoX){
+    	this->archivo=archivoX;
+    }
+    bool insert(string datos){
+    	ofstream is("job_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
 };
-template<typename T>
+
 class machine_attributes:public tabla_maestra
 {
 public:
+
 	lli size=0;
-	machine_attributes();
-    bool insert(string);
+	string archivo;
+	machine_attributes(string archivoX){
+		this->archivo=archivoX;
+	}
+    bool insert(string datos){
+    	ofstream is("machine_attributes/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n"; size++;}
+    
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
 
 
 };
-template<typename T>
+
 class machine_events:public tabla_maestra
 {
 public:
-	machine_events();
+	string archivo;
+	machine_events(string archivoX){
+		this->archivo=archivoX;
+	}
     lli size=0;
-    bool insert(string);
+    bool insert(string datos){
+    	ofstream is("machine_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
@@ -57,47 +84,71 @@ public:
 };
 
 
-template<typename T>
+
 class task_constraints:public tabla_maestra
 {
 public:
     
     lli size=0;  
-    task_constraints();
-    bool insert(string);
+    string archivo;
+    task_constraints(string archivoX){
+    	this->archivo=archivoX;
+    }
+    bool insert(string datos){
+    	ofstream is("task_constraints/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
 
 };
-template<typename T>
+
 class task_events:public tabla_maestra
 {
 public:
-    
+    string archivo;
     lli size=0;  
-    task_events();
-    bool insert(string);
+    task_events(string archivoX){
+    	this->archivo=archivoX;
+    }
+    bool insert(string datos){
+    	ofstream is("task_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
 
 };
-template<typename T>
+
 class task_usage:public tabla_maestra
 {
 public:
 
 	lli size=0;
-	task_usage();
-    bool insert(string);
+	string archivo;
+	task_usage(string archivoX){
+		this->archivo=archivoX;
+	}
+    bool insert(string datos){
+    	ofstream is("task_usage/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
     bool delet(T,string);
     bool update(T,string);
     string select(T);
 
 };
-
-
 
 
 
@@ -197,4 +248,4 @@ struct task_usage{
 };*/
 
 
-//#endif //ESTRUCTURA_H
+#endif //ESTRUCTURA_H
