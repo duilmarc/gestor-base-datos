@@ -1,15 +1,14 @@
+#ifndef BLOQUEO_H
+#define BLOQUEO_H
 
-//fuente github.com/skdi/OAD/hash.cpp Codigo propio
 #include <iostream>
 #include <queue>
 #include <string>
+#include <vector>
+
 using namespace std;
 
-struct transaccion{
-	char state;//G Granted /W Waiting
-	string nombre;
-	char type;//E Exclusive,S Shared
-};
+typedef pair<vector<int>,pair<char,char>> transaccion;
 
 const int TABLE_SIZE=10;
 class has{
@@ -18,8 +17,9 @@ private:
     int value;
     char state='N';//N non a,S shared,X Exclusive
     has *next;
-    queue<transaccion*> Tr;
+    
 public:
+	queue<transaccion*> Tr;
     has(int key,int value);
     int getkey(){return key;}
     int get_value(){return value;}
@@ -91,14 +91,14 @@ has::has(int key, int value){
 }
 void has::insertar_T(transaccion *T){
 	if(this->state=='N'){
-		this->state=T->type;
-		T->state='G';
+		this->state=T->second.second;
+		T->second.first='G';
 
-	}else if(this->state=='S' && T->type=='S'){
-		T->state='G';
+	}else if(this->state=='S' && T->second.second=='S'){
+		T->second.first='G';
 
 	}else if(this->state='X'){
-		T->state='W';
+		T->second.first='W';
 	}
 	this->Tr.push(T);
 }
@@ -111,7 +111,7 @@ void has::liberar(){
 	this->Tr.pop();	
 	transaccion *temp;
 	temp=Tr.front();
-	temp->state='G';
+	temp->second.first='G';
 	delete temp;
     }
 }
@@ -148,14 +148,14 @@ void hasmap::remove(int key){
 
 
 }
-
+/*
 
 int main(){
     hasmap* mimap=new hasmap();
-    transaccion *A=new transaccion();
-    transaccion *B=new transaccion();
-    transaccion *C=new transaccion();
-    //inicializacion de las transacciones
+    vector<int> *A=new vector<int>();
+    vector<int> *B=new vector<int>();
+    vector<int> *C=new vector<int>();
+    //inicializacion de las vector<int>es
     A->nombre="T1";
     B->nombre="T2";
     C->nombre="T3";
@@ -170,7 +170,7 @@ int main(){
     has *has1=mimap->get_node(2);
     has *has2=mimap->get_node(6);
     has *has3=mimap->get_node(7);
-    //insercion de las transacciones en los nodos
+    //insercion de las vector<int>es en los nodos
     if(has1!=NULL && has2!=NULL && has3!=NULL){
 
         has1->insertar_T(A);
@@ -181,26 +181,26 @@ int main(){
         has3->insertar_T(B);
         has3->insertar_T(C);
 
-        //liberando luego de finalizar la transaccion
-        cout<<"Estado de Has1 antes de liberar la transaccion A: "<<has1->get_state()<<endl;
+        //liberando luego de finalizar la vector<int>
+        cout<<"Estado de Has1 antes de liberar la vector<int> A: "<<has1->get_state()<<endl;
         has1->liberar();
-        cout<<"Estado de Has1 despues de liberar la transaccion A: "<<has1->get_state()<<endl;
+        cout<<"Estado de Has1 despues de liberar la vector<int> A: "<<has1->get_state()<<endl;
         
-        cout<<"Estado de Has2 antes de liberar la transaccion A: "<<has2->get_state()<<endl;
+        cout<<"Estado de Has2 antes de liberar la vector<int> A: "<<has2->get_state()<<endl;
         has2->liberar();
-        cout<<"Estado de Has2 despues de liberar la transaccion A: "<<has2->get_state()<<endl;
+        cout<<"Estado de Has2 despues de liberar la vector<int> A: "<<has2->get_state()<<endl;
        
-        cout<<"Estado de Has2 antes de liberar la transaccion B: "<<has2->get_state()<<endl;
+        cout<<"Estado de Has2 antes de liberar la vector<int> B: "<<has2->get_state()<<endl;
         has2->liberar();
-        cout<<"Estado de Has2 despues de liberar la transaccion B: "<<has2->get_state()<<endl;
+        cout<<"Estado de Has2 despues de liberar la vector<int> B: "<<has2->get_state()<<endl;
         
-        cout<<"Estado de Has3 antes de liberar la transaccion B: "<<has3->get_state()<<endl;
+        cout<<"Estado de Has3 antes de liberar la vector<int> B: "<<has3->get_state()<<endl;
         has3->liberar();
-        cout<<"Estado de Has3 despues de liberar la transaccion B: "<<has3->get_state()<<endl;
+        cout<<"Estado de Has3 despues de liberar la vector<int> B: "<<has3->get_state()<<endl;
        
-        cout<<"Estado de Has3 antes de liberar la transaccion C: "<<has3->get_state()<<endl;
+        cout<<"Estado de Has3 antes de liberar la vector<int> C: "<<has3->get_state()<<endl;
         has3->liberar();
-        cout<<"Estado de Has3 despues de liberar la transaccion C: "<<has3->get_state()<<endl;
+        cout<<"Estado de Has3 despues de liberar la vector<int> C: "<<has3->get_state()<<endl;
     
 
     }
@@ -209,3 +209,8 @@ int main(){
     delete A,B,C,mimap;
     return 0;
 }
+
+*/
+
+
+#endif //BLOQUEO_H
