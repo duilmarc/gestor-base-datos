@@ -1,44 +1,222 @@
+#ifndef ESTRUCTURAS_H
+#define ESTRUCTURAS_H
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
 #include <string>
-typedef unsigned long long int lli;
+#include <cstring>
+#include <vector>
+#include "bloqueo.h"
+
 using namespace std;
+typedef unsigned long long int lli;
+//typedef pair<vector<int>,pair<char,char>> transaccion;
+//variable referenciar a indice
+typedef string T;
+
+void imprimir(vector<string> select){
+	for(int i=0;i<select.size()-1;i++){
+		cout<<select[i]<<endl;
+	}
+	cout<<"--------------------------"<<endl;
+}
+
+//Clase abstracta de la cual heredan las tablas de la BD
+//esto se hace para que todas las demas tablas requieran implementar los siguientes 
+//metodos , tales como inser,delete,update y select para sus respectivos campos
+class tabla_maestra
+{
+public:
+	tabla_maestra();
+	//funcion que inserta al final de la BD de la tabla seleccionada creando un nuevo
+    //archivo a menos que ya exista
+	virtual bool insert(string);
+	//funcion que pone los campos del indice elegido a NULL por defecto 
+	virtual bool delet(T,string);
+	//funcion que sustituye los campos del indice elegido por unos nuevos valores
+	virtual bool update(T,string,string);
+	//funcion qie busca y devuelve los campos del indice elegido
+	virtual vector<string> select(T);
+
+};
+
 
 class job_events
 {
+   
 public:
-    lli timespamp;
-    string missing_info;
-    lli job_ID;
-    string event_type;
-    string user_name;
-    string scheduling_class;
-    string job_name;
-    string logical_job_name;
     lli size=0;    
-    job_events();
-    bool insert(lli,string,lli,string,string,string,string,string);
-    bool delet(string);
-    bool update(lli,string,lli,string,string,string,string,string);
-    string select(string);
-};
+    string archivo;
+    vector<int> orden;
+    char state;
+    char type;
+    transaccion tr;
+    job_events(string archivoX){
+    	this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    }
 
+    bool insert(string datos){
+    	this->type='E';
+    	ofstream is("job_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    }
+    bool delet(T,string){
+    	this->type='E';
+    }
+    bool update(T,string,string){
+    	this->type='E';
+    }
+   	vector<string> select(T){
+   		this->type='S';
+   	}
+
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }
+};
 
 class machine_attributes
 {
 public:
-    lli timestamp;
-    lli machine_ID;
-    string attribute_name;
-    string attribute_value;
-    bool attribute_deleted;
-    lli size=0;  
-    machine_attributes();
-    bool insert(lli,lli,string,string,bool);
-    bool delet(lli);
-    bool update(lli,lli,string,string,bool);
-    string select(lli);
+	vector<int> orden;
+	lli size=0;
+	string archivo;
+	char state;
+	char type;
+	transaccion tr;
+	machine_attributes(string archivoX){
+		this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+	}
+    bool insert(string datos){
+    	ofstream is("machine_attributes/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n"; size++;}
+    
+    }
+    bool delet(T,string);
+    bool update(T index,string valor,string datos){
+    	fstream is("machine_attributes/"+this->archivo+".csv",fstream::in | fstream::out);
+    	long int position=0;
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {
+    		unsigned cont=0;
+    		char *buffer= new char[200];
+    		while(cont<stoi(index)){
+    			is.getline(buffer,200);
+    			cont++;
+    		}
+
+    		is<<datos<<"\n";
+    		is.close();
+    	}
+    }
+    vector<string> select(T index){
+    }
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }    
 
 
 };
@@ -46,97 +224,307 @@ public:
 class machine_events
 {
 public:
-    
-    lli timestamp;
-    lli machine_ID;
-    string event_type;
-    string platform_ID;
-    string capacity_CPU;
-    string capacity_memory;
-    lli size=0;  
-    machine_events();
-    bool insert(lli,lli,string,string ,string,string);
-    bool delet(lli);
-    bool update(lli,lli,string,string ,string,string);
-    string select(lli);
-
+	vector<int> orden;
+	string archivo;
+	char state;
+	char type;
+	transaccion tr;
+	machine_events(string archivoX){
+		this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+	}
+    lli size=0;
+    bool insert(string datos){
+    	ofstream is("machine_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    }
+    bool delet(T,string);
+    bool update(T,string,string);
+    vector<string> select(T);
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }
 };
+
+
+
 class task_constraints
 {
 public:
-    
-    lli timestamp;
-    lli job_ID;
-    lli task_index;
-    string attribute_name;
-    char comparison_operator;
-    string attribute_value;
+	vector<int> orden;    
     lli size=0;  
-    task_constraints();
-    bool insert(lli,lli,lli,string,char,string);
-    bool delet(lli);
-    bool update(lli,lli,lli,string,char,string);
-    string select(lli);
-
+    string archivo;
+    char state;
+	char type;
+	transaccion tr;
+    task_constraints(string archivoX){
+    	this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    }
+    bool insert(string datos){
+    	ofstream is("task_constraints/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
+    bool delet(T,string);
+    bool update(T,string,string);
+    vector<string> select(T);
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }
 };
 
 class task_events
 {
 public:
-    
-    lli timestamp;
-    string missing_info;
-    lli job_ID;
-    string task_index;
-    lli machine_ID;
-    string event_type;
-    string user_name;
-    string scheduling_class;
-    lli priority;
-    string resource_request_for_CPU_cores;
-    string resource_request_for_RAM;
-    string resource_request_for_local_disk_space;
-    string different_machine_constraint;    
+	vector<int> orden;
+    string archivo;
+    char state;
+	char type;
+	transaccion tr;
     lli size=0;  
-    task_events();
-    bool insert(lli,string,lli,string,lli,string,string,string,lli,string,string,string,string);
-    bool delet(string);
-    bool update(lli,string,lli,string,lli,string,string,string,lli,string,string,string,string);
-    string select(string);
-
+    task_events(string archivoX){
+    	this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    }
+    bool insert(string datos){
+    	ofstream is("task_events/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
+    bool delet(T,string);
+    bool update(T,string,string);
+    vector<string> select(T);
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }
 };
 
-struct task_usage{
-	lli start_time;
-	lli end_time;
-	lli job_id;
-	string task_index;
-	lli machine_id;
-	lli mean_cpu_usage_rate;
-	lli canocical_memory_usage;
-	lli assigned_memory_usage;
-	lli unmapped_page_cache_memory_usage;
-	lli total_page_cache_memory_usage;
-	lli maximum_memory_usage;
-	lli mean_disk_io_time;
-	lli mean_local_disk_space_used;
-	lli maximum_cpu_usage;
-	lli maximum_disk_io_time;
-	lli cycles_per_instruction_cpi;
-	lli memory_acceses_per_instruccion_mai;
-	lli sample_portion;
-	lli aggregation_type;
-	lli sampled_cpu_usage;
+class task_usage
+{
+public:
+	vector<int> orden;
 	lli size=0;
-	task_usage();
-	bool insert(lli,lli,lli,string,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli);
-	bool delet(lli);
-	bool update(lli,lli,lli,string,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli,lli);
-	string select(lli);
-
+	string archivo;
+	char state;
+	char type;
+	transaccion tr;
+	task_usage(string archivoX){
+		this->archivo=archivoX;
+    	this->state='N';//G Granted /W Waiting /N None
+    	this->type='S';//E Exclusive,S Shared
+    	this->tr.first=orden;//orden de la transaccion
+    	this->tr.second.first=state;//estado de la transaccion
+    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+	}
+    bool insert(string datos){
+    	ofstream is("task_usage/"+this->archivo+".csv",fstream::app);
+    	if(!is){
+    		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
+    	}else {is<<datos;is<<"\n";  size++;}
+    
+    }
+    bool delet(T,string);
+    bool update(T,string,string);
+    vector<string> select(T);
+   	bool llenar_transaccion(){
+   		int a=0;
+    	cout<<"transaccion Menu:"<<endl;
+    	cout<<"Insert 1:"<<endl;
+    	cout<<"Delete 2:"<<endl;
+    	cout<<"Update 3:"<<endl;
+    	cout<<"Select 4:"<<endl;
+    	cout<<"Exit 5:"<<endl;
+    	//se inserta el orden de las operaciones en un array que se ejecutara simulando la transaccion
+    	while(true){
+    		cin>>a;
+    		if(a==5){
+    			cout<<"operacion completada: "<<endl;
+    			break;
+    		}
+    		else{
+    			orden.push_back(a);
+    		}
+    	}
+   	}
+    bool ejecutar_transaccion(){
+    	string data;
+    	string data2;
+    	string data3;
+    	//se ejecuta el array anterior mente llenado por las operaciones requeridas
+    	for(int i=0;i<this->orden.size()-1;i++){
+    		if(this->orden[i]==1){//INSERTAR
+    			cout<<"Ingrese el elemento a insertar en la BD: ";cin>>data;
+    			insert(data);
+    			cout<<"Dato Insertado"<<endl;
+    		}else if(this->orden[i]==2){//ELIMINAR
+    			cout<<"Ingrese el indice del elemento a eliminar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a eliminar de la BD: ";cin>>data2;
+    			delet(data,data2);
+    			cout<<"Dato eliminado"<<endl;
+    		}else if(this->orden[i]==3){//ACTUALIZAR
+    			cout<<"Ingrese el indice del elemento a actualizar de la BD: ";cin>>data;
+    			cout<<"Ingrese el elemento a insertar de la BD: ";cin>>data2;
+    			cout<<"ingrese el elemento a actualizar de la BD: ";cin>>data3;
+    			update(data,data2,data3);
+    			cout<<"Dato actualizado"<<endl;
+    		}else if(this->orden[i]==4){//
+    			cout<<"Ingrese el indice del elemento a buscar en la BD: ";cin>>data;
+    			imprimir(select(data));
+    		}
+    	}
+    }
 };
-
-
 
 
 
@@ -234,3 +622,6 @@ struct task_usage{
 	tt aggregation_type;
 	tt sampled_cpu_usage;
 };*/
+
+
+#endif //ESTRUCTURA_H
