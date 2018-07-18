@@ -1,5 +1,5 @@
-#ifndef ESTRUCTURAS_H
-#define ESTRUCTURAS_H
+#ifndef TRANSACCIONES_H
+#define TRANSACCIONES_H
 #include <fstream>
 #include <stdio.h>
 #include <iostream>
@@ -624,4 +624,4 @@ struct task_usage{
 };*/
 
 
-#endif //ESTRUCTURA_H
+#endif //TRANSACCIONES_H
