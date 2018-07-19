@@ -9,12 +9,12 @@
 using namespace std;
 
 typedef pair<vector<int>,pair<char,char>> transaccion;
-
+//Hash map de tamaño TABLE_SIZe 
 const int TABLE_SIZE=10;
 class has{
 private:
-    int key;
-    int value;
+    int key;//valor de la clave calculada
+    int value;//valor que se desea almacenar(se usara como numero de ruta)
     char state='N';//N non a,S shared,X Exclusive
     has *next;
     
@@ -100,22 +100,25 @@ void has::insertar_T(transaccion *T){
 	}else if(this->state='X'){
 		T->second.first='W';
 	}
+	//se llena la cola con la nueva transaccion a espera de ser ejecutada
 	this->Tr.push(T);
 }
 void has::liberar(){
+	//en caso de que este vacio se mostrara el mensaje 
     if(this->Tr.empty()){
         cout<<"No quedan mas transacciones"<<endl;
         return;
-    }else{
-    this->state='N';
-	this->Tr.pop();	
-	transaccion *temp;
-	temp=Tr.front();
-	temp->second.first='G';
-	delete temp;
+    }else{//en caso tenga elementos se cambiara el estado a Non
+    	//y se eliminara la transaccion de la cola dando paso a la siguiente transaccion
+	    this->state='N';
+		this->Tr.pop();	
+		transaccion *temp;
+		temp=Tr.front();
+		temp->second.first='G';
+		delete temp;
     }
 }
-
+//funcion de insercion para el hashmap
 void hasmap::put(int key, int value){
     int hash1=key%TABLE_SIZE;
     if(table[hash1]==NULL){
@@ -126,7 +129,7 @@ void hasmap::put(int key, int value){
 
 }
 
-
+//funcion de eliminacion para el hashmap
 void hasmap::remove(int key){
     int hash1=key%TABLE_SIZE;
     has *mihash=table[hash1];
@@ -152,9 +155,9 @@ void hasmap::remove(int key){
 
 int main(){
     hasmap* mimap=new hasmap();
-    vector<int> *A=new vector<int>();
-    vector<int> *B=new vector<int>();
-    vector<int> *C=new vector<int>();
+    transaccion *A=new transaccion();
+    transaccion *B=new transaccion();
+    transaccion *C=new transaccion();
     //inicializacion de las vector<int>es
     A->nombre="T1";
     B->nombre="T2";
