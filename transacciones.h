@@ -11,7 +11,7 @@
 using namespace std;
 typedef unsigned long long int lli;
 //typedef pair<vector<int>,pair<char,char>> transaccion;
-//variable referenciar a indice
+
 typedef string T;
 
 void imprimir(vector<string> select){
@@ -24,6 +24,10 @@ void imprimir(vector<string> select){
 //Clase abstracta de la cual heredan las tablas de la BD
 //esto se hace para que todas las demas tablas requieran implementar los siguientes 
 //metodos , tales como inser,delete,update y select para sus respectivos campos
+
+
+//T: variable referenciar a indice
+
 class tabla_maestra
 {
 public:
@@ -41,7 +45,7 @@ public:
 };
 
 
-class job_events:public tabla_maestra
+class job_events
 {
    
 public:
@@ -126,7 +130,7 @@ public:
     }
 };
 
-class machine_attributes:public tabla_maestra
+class machine_attributes
 {
 public:
 	vector<int> orden;
@@ -224,7 +228,7 @@ public:
 
 };
 
-class machine_events:public tabla_maestra
+class machine_events
 {
 public:
 	vector<int> orden;
@@ -232,6 +236,7 @@ public:
 	char state;
 	char type;
 	transaccion tr;
+	lli size=0;
 	machine_events(string archivoX){
 		this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
@@ -240,16 +245,23 @@ public:
     	this->tr.second.first=state;//estado de la transaccion
     	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
 	}
-    lli size=0;
+    
     bool insert(string datos){
     	ofstream is("machine_events/"+this->archivo+".csv",fstream::app);
     	if(!is){
     		cout<<"Error 40X : no se pudo encontrar el archivo deseado"<<endl;
     	}else {is<<datos;is<<"\n";  size++;}
     }
-    bool delet(T,string);
-    bool update(T,string,string);
-    vector<string> select(T);
+    bool delet(T,string){
+
+    }
+    bool update(T,string,string){
+
+    }
+    vector<string> select(T){
+
+    }
+
    	bool llenar_transaccion(){
    		int a=0;
     	cout<<"transaccion Menu:"<<endl;
@@ -301,7 +313,7 @@ public:
 
 
 
-class task_constraints:public tabla_maestra
+class task_constraints
 {
 public:
 	vector<int> orden;    
@@ -325,9 +337,15 @@ public:
     	}else {is<<datos;is<<"\n";  size++;}
     
     }
-    bool delet(T,string);
-    bool update(T,string,string);
-    vector<string> select(T);
+    bool delet(T,string){
+
+    }
+    bool update(T,string,string){
+
+    }
+    vector<string> select(T){
+
+    }
    	bool llenar_transaccion(){
    		int a=0;
     	cout<<"transaccion Menu:"<<endl;
@@ -377,7 +395,7 @@ public:
     }
 };
 
-class task_events:public tabla_maestra
+class task_events
 {
 public:
 	vector<int> orden;
@@ -401,9 +419,9 @@ public:
     	}else {is<<datos;is<<"\n";  size++;}
     
     }
-    bool delet(T,string);
-    bool update(T,string,string);
-    vector<string> select(T);
+    bool delet(T,string){}
+    bool update(T,string,string){}
+    vector<string> select(T){}
    	bool llenar_transaccion(){
    		int a=0;
     	cout<<"transaccion Menu:"<<endl;
@@ -453,7 +471,7 @@ public:
     }
 };
 
-class task_usage:public tabla_maestra
+class task_usage
 {
 public:
 	vector<int> orden;
@@ -477,9 +495,9 @@ public:
     	}else {is<<datos;is<<"\n";  size++;}
     
     }
-    bool delet(T,string);
-    bool update(T,string,string);
-    vector<string> select(T);
+    bool delet(T,string){}
+    bool update(T,string,string){}
+    vector<string> select(T){}
    	bool llenar_transaccion(){
    		int a=0;
     	cout<<"transaccion Menu:"<<endl;
