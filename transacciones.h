@@ -54,14 +54,14 @@ public:
     vector<int> orden;
     char state;
     char type;
-    transaccion tr;
+    transaccion *tr;
     job_events(string archivoX){
     	this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
     }
 
     bool insert(string datos){
@@ -138,14 +138,14 @@ public:
 	string archivo;
 	char state;
 	char type;
-	transaccion tr;
+	transaccion *tr;
 	machine_attributes(string archivoX){
 		this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
 	}
     bool insert(string datos){
     	ofstream is("machine_attributes/"+this->archivo+".csv",fstream::app);
@@ -235,15 +235,15 @@ public:
 	string archivo;
 	char state;
 	char type;
-	transaccion tr;
+	transaccion *tr;
 	lli size=0;
 	machine_events(string archivoX){
 		this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
 	}
     
     bool insert(string datos){
@@ -321,14 +321,14 @@ public:
     string archivo;
     char state;
 	char type;
-	transaccion tr;
+	transaccion *tr;
     task_constraints(string archivoX){
     	this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
     }
     bool insert(string datos){
     	ofstream is("task_constraints/"+this->archivo+".csv",fstream::app);
@@ -402,15 +402,15 @@ public:
     string archivo;
     char state;
 	char type;
-	transaccion tr;
+	transaccion *tr;
     lli size=0;  
     task_events(string archivoX){
     	this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
     }
     bool insert(string datos){
     	ofstream is("task_events/"+this->archivo+".csv",fstream::app);
@@ -479,14 +479,14 @@ public:
 	string archivo;
 	char state;
 	char type;
-	transaccion tr;
+	transaccion *tr;
 	task_usage(string archivoX){
 		this->archivo=archivoX;
     	this->state='N';//G Granted /W Waiting /N None
     	this->type='S';//E Exclusive,S Shared
-    	this->tr.first=orden;//orden de la transaccion
-    	this->tr.second.first=state;//estado de la transaccion
-    	this->tr.second.second=type;//tipo de la funcion ejecutada en la transaccion
+    	this->tr->first=orden;//orden de la transaccion
+    	this->tr->second.first=state;//estado de la transaccion
+    	this->tr->second.second=type;//tipo de la funcion ejecutada en la transaccion
 	}
     bool insert(string datos){
     	ofstream is("task_usage/"+this->archivo+".csv",fstream::app);
