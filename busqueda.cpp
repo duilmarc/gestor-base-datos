@@ -245,7 +245,6 @@ int main()
 	Tabla *jobEvents= new Tabla(salida1);
 	long int posicion=jobEvents->busqueda(6423593867);
 	vector<pair<long int,int>> pos;
-	vector<pair<long int,int>> * puntero_p;
 	jobEvents->obtener_posiciones(pos,posicion);
 	for(int i=0;i<pos.size();i++)
 	{
