@@ -41,7 +41,7 @@ public:
 };
 
 
-class job_events
+class job_events:public tabla_maestra
 {
    
 public:
@@ -126,7 +126,7 @@ public:
     }
 };
 
-class machine_attributes
+class machine_attributes:public tabla_maestra
 {
 public:
 	vector<int> orden;
@@ -150,7 +150,10 @@ public:
     	}else {is<<datos;is<<"\n"; size++;}
     
     }
-    bool delet(T,string);
+    bool delet(T,string){
+    	
+    }
+
     bool update(T index,string valor,string datos){
     	fstream is("machine_attributes/"+this->archivo+".csv",fstream::in | fstream::out);
     	long int position=0;
@@ -221,7 +224,7 @@ public:
 
 };
 
-class machine_events
+class machine_events:public tabla_maestra
 {
 public:
 	vector<int> orden;
@@ -298,7 +301,7 @@ public:
 
 
 
-class task_constraints
+class task_constraints:public tabla_maestra
 {
 public:
 	vector<int> orden;    
@@ -374,7 +377,7 @@ public:
     }
 };
 
-class task_events
+class task_events:public tabla_maestra
 {
 public:
 	vector<int> orden;
@@ -450,7 +453,7 @@ public:
     }
 };
 
-class task_usage
+class task_usage:public tabla_maestra
 {
 public:
 	vector<int> orden;
