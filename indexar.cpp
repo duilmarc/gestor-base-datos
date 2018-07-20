@@ -235,11 +235,11 @@ void indexar_job_events(int numero_columna,int cantidad, int n_csv)
 int main()
 {
 
-   //indexar_machine_events(2,-1,1);
-    //indexar_machine_atributes(2,-1,1);
-   //indexar_task_events(3,100000,500);
-    //indexar_job_events(3,100000,500);
-    //indexar_task_constraints(1,1000000,500);
-    //indexar_task_usage(5,1000000,500);
+   indexar_machine_events(2,-1,1);
+    indexar_machine_atributes(2,-1,1);
+   indexar_task_events(3,100000,500);
+    indexar_job_events(3,100000,500);
+    indexar_task_constraints(1,1000000,500);
+    indexar_task_usage(5,1000000,500);
     return 0;
 }
